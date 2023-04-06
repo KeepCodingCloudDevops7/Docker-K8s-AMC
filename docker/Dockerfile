@@ -1,7 +1,5 @@
 FROM python:3.7-alpine as base
 
-FROM base AS dependencies
-
 WORKDIR /install
 
 RUN apk add --no-cache gcc musl-dev linux-headers
@@ -11,8 +9,9 @@ RUN pip install --prefix=/install -r /requirements.txt
 
 
 FROM base
+RUN apk add --no-cache mysql-dev
 
-COPY --from=dependencies /install /usr/local
+COPY --from=base /install /usr/local
 
 WORKDIR /app
 COPY app.py ./

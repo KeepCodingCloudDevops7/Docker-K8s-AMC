@@ -17,6 +17,10 @@ COPY --from=dependencies /install /usr/local
 WORKDIR /app
 COPY app.py ./
 
+ENV FLASK_APP=app.py
+ENV FLASK_ENV=development
+ENV FLASK_RUN_HOST=0.0.0.0
+
 ENV MYSQL_USER=user
 ENV MYSQL_PASSWORD=user
 ENV MYSQL_HOST=kp_db

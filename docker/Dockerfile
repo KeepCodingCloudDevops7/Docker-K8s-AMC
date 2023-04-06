@@ -17,11 +17,10 @@ COPY --from=dependencies /install /usr/local
 WORKDIR /app
 COPY . .
 
-ENV FLASK_APP app.py
-ENV FLASK_RUN_HOST 0.0.0.0
-ENV REDIS_HOST "redis"
-ENV REDIS_PORT "6379"
-ENV REDIS_PASSWORD ""
+ENV MYSQL_USER=user
+ENV MYSQL_PASSWORD=user
+ENV MYSQL_HOST=kp_db
+ENV MYSQL_DATABASE=db_partidos
 
 EXPOSE 5000
 

@@ -21,8 +21,8 @@ def crear_partidos():
         local = random.choice(equipos)
         visitante = random.choice([x for x in equipos if x != local])
         resultado = f"{random.randint(0, 5)} - {random.randint(0, 5)}"
-        fecha = datetime.datetime.now()
-        cursor.execute(f''' INSERT INTO partidos (equipo_local, equipo_visitante, resultado, fecha) VALUES ('{local}', '{visitante}', '{resultado}', '{fecha}'); ''')
+        fecha_str = fecha.strftime('%Y-%m-%d %H:%M:%S')
+    cursor.execute(f''' INSERT INTO partidos (equipo_local, equipo_visitante, resultado, fecha) VALUES ('{local}', '{visitante}', '{resultado}', '{fecha_str}'); ''')
     cursor.execute(''' COMMIT; ''')
     cursor.close()
     return 'Partidos creados'

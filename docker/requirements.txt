@@ -2,4 +2,3 @@ flask
 flask-mysqldb
 redis
 json_logging
-prometheus_flask_exporte

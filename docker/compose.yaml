@@ -1,0 +1,36 @@
+services:
+  #Contruccion imagen flask
+  app:
+    build: .
+    image: amc/flask-1.0
+    ports:
+      - "$HOST_PORT:5601"
+    environment:
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+      MYSQL_USER: $MYSQL_USER
+      MYSQL_PASSWORD: $MYSQL_PASSWORD
+      MYSQL_DATABASE: $MYSQL_DATABASE
+    networks:
+      - net
+    depends_on:
+      - db
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+      MYSQL_USER: $MYSQL_USER
+      MYSQL_PASSWORD: $MYSQL_PASSWORD
+      MYSQL_DATABASE: $MYSQL_DATABASE
+    volumes:
+      - type: volume
+        source: db_data
+        target: /var/lib/mysql
+      - type: bind
+        source: ./init_db.sh
+        target: /docker-entrypoint-initdb.d/init_db.sh
+    networks:
+      - net
+networks:
+  net:
+volumes: 
+  db_data: {}

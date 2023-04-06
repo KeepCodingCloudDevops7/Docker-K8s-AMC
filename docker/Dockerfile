@@ -15,7 +15,7 @@ FROM base
 COPY --from=dependencies /install /usr/local
 
 WORKDIR /app
-COPY . .
+COPY app.py ./
 
 ENV MYSQL_USER=user
 ENV MYSQL_PASSWORD=user

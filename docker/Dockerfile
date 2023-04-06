@@ -26,6 +26,4 @@ ENV MYSQL_PASSWORD=user
 ENV MYSQL_HOST=kp_db
 ENV MYSQL_DATABASE=db_partidos
 
-EXPOSE 5000
-
 CMD ["flask", "run"]

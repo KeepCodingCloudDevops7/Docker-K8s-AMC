@@ -2,9 +2,12 @@ FROM python:3.7-alpine as base
 
 WORKDIR /install
 
-RUN apk add --no-cache gcc musl-dev linux-headers
-COPY requirements.txt /requirements.txt
-RUN pip install --prefix=/install -r /requirements.txt
+RUN apk add --no-cache gcc musl-dev linux-headers curl mysql-client mysql-dev
+
+WORKDIR /app
+COPY requirements.txt ./
+
+RUN pip install --prefix=/install -r requirements.txt
 
 FROM base
 RUN apk add --no-cache mysql-dev

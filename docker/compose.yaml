@@ -4,7 +4,7 @@ services:
     build: .
     image: amc/flask-1.0
     ports:
-      - "$HOST_PORT:5601"
+      - 5601:5601
     environment:
       MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
       MYSQL_USER: $MYSQL_USER

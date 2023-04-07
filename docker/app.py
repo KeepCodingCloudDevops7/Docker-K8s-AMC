@@ -5,10 +5,10 @@ import datetime
 import os
 
 app = Flask(__name__)
-app.config['MYSQL_DB'] = os.environ.get('MYSQL_DATABASE', 'db-partidos')
-app.config['MYSQL_USER'] = os.environ.get('MYSQL_USER', 'user')
-app.config['MYSQL_PASSWORD'] = os.environ.get('MYSQL_PASSWORD', 'root')
-app.config['MYSQL_HOST'] = os.environ.get('MYSQL_HOST', 'db')
+app.config['MYSQL_DB'] = os.environ.get ['MYSQL_DATABASE']
+app.config['MYSQL_USER'] = os.environ.ge['MYSQL_USER']
+app.config['MYSQL_PASSWORD'] = os.environ.get['MYSQL_PASSWORD']
+app.config['MYSQL_HOST'] = os.environ.get['MYSQL_HOST']
 mysql = MySQL(app)
 
 @app.route('/crear-partidos')

@@ -11,7 +11,7 @@ app.config['MYSQL_PASSWORD'] = os.environ['MYSQL_PASSWORD'] or "user"
 app.config['MYSQL_HOST'] = os.environ['MYSQL_HOST'] or "kp-db"
 mysql = MySQL(app)
 
-@app.route('/crear-partidos')
+@app.route('/')
 def crear_partidos():
     equipos = ['Real Madrid', 'Barcelona', 'Atletico de Madrid', 'Valencia', 'Sevilla', 'Villarreal', 'Real Sociedad', 'Real Betis', 'Athletic Club', 'Getafe']
     cursor = mysql.connection.cursor()
@@ -28,7 +28,7 @@ def crear_partidos():
     cursor.close()
     return 'Partidos creados'
 
-@app.route('/')
+@app.route('/1')
 def mostrar_partidos():
     s = "<table style='border:1px solid red'>"
 

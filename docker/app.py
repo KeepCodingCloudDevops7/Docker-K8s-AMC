@@ -6,7 +6,7 @@ import os
 
 app = Flask(__name__)
 app.config['MYSQL_DB'] = os.environ.get ['MYSQL_DATABASE'] or 'db-partidos'
-app.config['MYSQL_USER'] = os.environ.ge['MYSQL_USER'] or 'user'
+app.config['MYSQL_USER'] = os.environ.get['MYSQL_USER'] or 'user'
 app.config['MYSQL_PASSWORD'] = os.environ.get['MYSQL_PASSWORD'] or 'user'
 app.config['MYSQL_HOST'] = os.environ.get['MYSQL_HOST'] or 'db'
 mysql = MySQL(app)

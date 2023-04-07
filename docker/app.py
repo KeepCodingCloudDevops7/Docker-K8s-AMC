@@ -5,7 +5,7 @@ import datetime
 import os
 
 app = Flask(__name__)
-app.config['MYSQL_DB'] = os.environ['MYSQL_DATABASE'] or "db_partidos"
+app.config['MYSQL_DB'] = os.environ['MYSQL_DATABASE'] or "db-partidos"
 app.config['MYSQL_USER'] = os.environ['MYSQL_USER'] or "user"
 app.config['MYSQL_PASSWORD'] = os.environ['MYSQL_PASSWORD'] or "user"
 app.config['MYSQL_HOST'] = os.environ['MYSQL_HOST'] or "kp-db"

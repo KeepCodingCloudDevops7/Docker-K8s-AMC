@@ -1,47 +1,40 @@
 from flask import Flask
 from flask_mysqldb import MySQL
-import random
-import datetime
 import os
 
 app = Flask(__name__)
-app.config['MYSQL_DB'] = os.environ['MYSQL_DATABASE'] or "db-partidos"
-app.config['MYSQL_USER'] = os.environ['MYSQL_USER'] or "user"
-app.config['MYSQL_PASSWORD'] = os.environ['MYSQL_PASSWORD'] or "user"
-app.config['MYSQL_HOST'] = os.environ['MYSQL_HOST'] or "kp-db"
+
+app.config['MYSQL_DB'] = os.environ['MYSQL_DATABASE'] 
+app.config['MYSQL_USER'] = os.environ['MYSQL_USER']
+app.config['MYSQL_PASSWORD'] = os.environ['MYSQL_PASSWORD'] 
+app.config['MYSQL_HOST'] = os.environ['MYSQL_HOST'] 
 mysql = MySQL(app)
 
-@app.route('/')
-def crear_partidos():
-    equipos = ['Real Madrid', 'Barcelona', 'Atletico de Madrid', 'Valencia', 'Sevilla', 'Villarreal', 'Real Sociedad', 'Real Betis', 'Athletic Club', 'Getafe']
+
+@app.route('/inicializa-contador')
+def initialize():
     cursor = mysql.connection.cursor()
-    cursor.execute(''' DROP TABLE IF EXISTS partidos; ''')
-    cursor.execute(''' CREATE TABLE partidos (id INT PRIMARY KEY AUTO_INCREMENT, equipo_local VARCHAR(255), equipo_visitante VARCHAR(255), resultado VARCHAR(255), fecha DATETIME); ''')
-    fecha = datetime.datetime.now()
-    for i in range(10):
-        local = random.choice(equipos)
-        visitante = random.choice([x for x in equipos if x != local])
-        resultado = f"{random.randint(0, 5)} - {random.randint(0, 5)}"
-        fecha_str = fecha.strftime('%Y-%m-%d %H:%M:%S')
-        cursor.execute(f''' INSERT INTO partidos (equipo_local, equipo_visitante, resultado, fecha) VALUES ('{local}', '{visitante}', '{resultado}', '{fecha_str}'); ''')
+    cursor.execute(''' UPDATE tabla_contador SET contador=0; ''')
     cursor.execute(''' COMMIT; ''')
     cursor.close()
-    return 'Partidos creados'
+    return 'Contador inicializado a 0'
 
-@app.route('/1')
-def mostrar_partidos():
+
+@app.route('/')
+def conteo():
     s = "<table style='border:1px solid red'>"
 
     cursor = mysql.connection.cursor()
-    cursor.execute(''' SELECT * FROM partidos; ''')
-    for row in cursor.fetchall():
+    cursor.execute(''' UPDATE tabla_contador SET contador = contador + 1; ''')
+    cursor.execute(''' COMMIT; ''')
+    cursor.close()
+
+    cursor2 = mysql.connection.cursor()
+    cursor2.execute(''' SELECT * FROM tabla_contador; ''')
+    for row in cursor2.fetchall():
         s = s + "<tr>"
         for x in row:
             s = s + "<td>" + str(x) + "</td>"
         s = s + "</tr>"
-    cursor.close()
-    return "<html><body>" + s + "</body></html>"
-
-
-if __name__ == '__main__':
-    app.run()
+    cursor2.close()
+    return "<html><body> VISITANTES: " + s + "</body></html>"

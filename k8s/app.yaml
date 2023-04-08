@@ -1,16 +1,17 @@
-apiVersion: apps/v1
+apiVersion: app/v1
 kind: Deployment
 metadata:
   name: app-deploy
+  namespace: kp-practica
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: webapp
+      app: app-wb
   template:
     metadata:
       labels:
-        app: webapp
+        app: app-wb
     spec:
       affinity:
         podAffinity:
@@ -22,7 +23,7 @@ spec:
                 - key: app
                   operator: In
                   values: 
-                  - db-app
+                  - app-db
               topologyKey: "topology.kubernetes.io/hostname"
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -33,38 +34,59 @@ spec:
                 - key: app
                   operator: In
                   values: 
-                  - webapp
+                  - app-wb
               topologyKey: "topology.kubernetes.io/hostname"
       containers:
-      - name: webapp
+      - name: app-wb
         image: lonelyglare/creador-partidos-futbol
         ports:
         - containerPort: 5000
         resources:
           limits:
-            cpu: "0.6"
+            cpu: "1"
             memory: "200Mi"
           requests:
-            cpu: "0.3"
+            cpu: "1"
             memory: "100Mi"
         env:
         - name: MYSQL_USER
           valueFrom:
             secretKeyRef:
-              name: mysql-secret
+              name: user-config
               key: MYSQL_USER
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: mysql-secret
+              name: user-config
               key: MYSQL_PASSWORD
         - name: MYSQL_DATABASE
           valueFrom:
             secretKeyRef:
-              name: mysql-secret
+              name: db-config
               key: MYSQL_DATABASE
         - name: MYSQL_HOST
           valueFrom:
             secretKeyRef:
-              name: mysql-secret
+              name: db-config
               key: MYSQL_HOST
+        volumeMounts:
+        - name: db-storage
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: db-storage
+        persistentVolumeClaim:
+          claimName: db-volume
+---
+apiVersion: db/v1
+kind: Service
+metadata:
+  name: db
+  labels:
+    app: db
+spec:
+  ports:
+    - name: mysql
+      port: 3306
+      targetPort: 3306
+  selector:
+    app: mysql

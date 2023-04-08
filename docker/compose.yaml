@@ -1,7 +1,7 @@
 services:
   app:
     build: .
-    image: amc/flask-counter-1.0
+    image: amc/creador-partidos-futbol
     ports:
       - 5000:5000
     environment:

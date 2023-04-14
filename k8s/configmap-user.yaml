@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: Secret
-metadata:
-  name: user-config
-  namespace: kp-practica
-type: Opaque
-data:
-  MYSQL_USER: derp
-  MYSQL_PASSWORD: derp

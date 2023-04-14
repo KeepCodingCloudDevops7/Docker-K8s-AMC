@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: app-statefulset
+  namespace: kp-practica
+spec:
+  serviceName: app-service
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-wb
+  template:
+    metadata:
+      labels:
+        app: app-wb
+    spec:
+      affinity:
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                    - app-db
+              topologyKey: "topology.kubernetes.io/hostname"
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                    - app-wb
+              topologyKey: "topology.kubernetes.io/hostname"
+      containers:
+      - name: app-wb
+        image: lonelyglare/creador-partidos-futbol
+        ports:
+        - containerPort: 5000
+        resources:
+          limits:
+            cpu: "1"
+            memory: "200Mi"
+          requests:
+            cpu: "1"
+            memory: "100Mi"
+        env:
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: user-config
+              key: MYSQL_USER
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: user-config
+              key: MYSQL_PASSWORD
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: db-config
+              key: MYSQL_DATABASE
+        - name: MYSQL_HOST
+          valueFrom:
+            secretKeyRef:
+              name: db-config
+              key: MYSQL_HOST
+        volumeMounts:
+        - name: db-storage
+          mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: db-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "standard"
+      resources:
+        requests:
+          storage: 5Gi

@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: db-config
-  namespace: kp-practica
-data:
-  MYSQL_DATABASE: db-partidos
-  MYSQL_HOST: derp

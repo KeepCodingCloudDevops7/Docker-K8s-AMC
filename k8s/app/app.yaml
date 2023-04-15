@@ -1,4 +1,4 @@
-apiVersion: app/v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: app-deploy
@@ -77,7 +77,7 @@ spec:
         persistentVolumeClaim:
           claimName: db-volume
 ---
-apiVersion: db/v1
+apiVersion: v1
 kind: Service
 metadata:
   name: db

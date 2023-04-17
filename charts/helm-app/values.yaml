@@ -1,0 +1,84 @@
+replicaCount: 2
+
+image:
+  repository: lonelyglare/creador-partidos-futbol
+  tag: latest
+  pullPolicy: Always
+
+env:
+  MYSQL_USER:
+    secretName: user-config
+    secretKey: MYSQL_USER
+  MYSQL_PASSWORD:
+    secretName: user-config
+    secretKey: MYSQL_PASSWORD
+  MYSQL_DATABASE:
+    configMapName: db-config
+    key: MYSQL_DATABASE
+  MYSQL_HOST:
+    configMapName: db-config
+    key: MYSQL_HOST
+
+resources:
+  limits:
+    cpu: 1
+    memory: 200Mi
+  requests:
+    cpu: 1
+    memory: 100Mi
+
+affinity:
+  podAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 1
+      podAffinityTerm:
+        labelSelector:
+          matchExpressions:
+          - key: app
+            operator: In
+            values: 
+            - app-db
+        topologyKey: "topology.kubernetes.io/hostname"
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 1
+      podAffinityTerm:
+        labelSelector:
+          matchExpressions:
+          - key: app
+            operator: In
+            values: 
+            - app-wb
+        topologyKey: "topology.kubernetes.io/hostname"
+
+service:
+  type: LoadBalancer
+  port: 5000
+  targetPort: 5000
+
+persistence:
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 5Gi
+  storageClassName: standard
+  mountPath: /var/lib/mysql
+  subPath: ""
+
+mysql:
+  service:
+    name: db
+    port: 3306
+
+db:
+  config:
+    MYSQL_DATABASE: db-partidos
+    MYSQL_HOST: derp
+  secret:
+    MYSQL_USER: derp
+    MYSQL_PASSWORD: derp
+
+fullnameOverride: ""
+nameOverride: ""
+
+labels: {}
+annotations: {}

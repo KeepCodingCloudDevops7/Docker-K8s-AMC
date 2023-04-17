@@ -1,8 +1,10 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: app-deploy
+  name: app-statefulset
+  namespace: kp-practica
 spec:
+  serviceName: app-service
   replicas: 1
   selector:
     matchLabels:
@@ -21,8 +23,8 @@ spec:
                 matchExpressions:
                 - key: app
                   operator: In
-                  values: 
-                  - app-db
+                  values:
+                    - app-db
               topologyKey: "topology.kubernetes.io/hostname"
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -32,8 +34,8 @@ spec:
                 matchExpressions:
                 - key: app
                   operator: In
-                  values: 
-                  - app-wb
+                  values:
+                    - app-wb
               topologyKey: "topology.kubernetes.io/hostname"
       containers:
       - name: app-wb
@@ -71,21 +73,12 @@ spec:
         volumeMounts:
         - name: db-storage
           mountPath: /var/lib/mysql
-      volumes:
-      - name: db-storage
-        persistentVolumeClaim:
-          claimName: db-volume
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: db
-  labels:
-    app: db
-spec:
-  ports:
-    - name: mysql
-      port: 3306
-      targetPort: 3306
-  selector:
-    app: mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: db-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "standard"
+      resources:
+        requests:
+          storage: 5Gi

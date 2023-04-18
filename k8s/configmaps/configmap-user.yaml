@@ -4,5 +4,5 @@ metadata:
   name: user-config
 type: Opaque
 data:
-  MYSQL_USER: derp
-  MYSQL_PASSWORD: derp
+  MYSQL_USER: ZGVycAo=
+  MYSQL_PASSWORD: ZGVycAo=

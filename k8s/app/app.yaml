@@ -60,32 +60,32 @@ spec:
               key: MYSQL_PASSWORD
         - name: MYSQL_DATABASE
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               name: db-config
               key: MYSQL_DATABASE
         - name: MYSQL_HOST
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               name: db-config
               key: MYSQL_HOST
-        volumeMounts:
-        - name: db-storage
-          mountPath: /var/lib/mysql
-      volumes:
-      - name: db-storage
-        persistentVolumeClaim:
-          claimName: db-volume
+        #volumeMounts:
+        #- name: db-storage
+         # mountPath: /var/lib/mysql
+      #volumes:
+      #- name: db-storage
+       # persistentVolumeClaim:
+        #  claimName: db-volume
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: db
-  labels:
-    app: db
-spec:
-  ports:
-    - name: mysql
-      port: 3306
-      targetPort: 3306
-  selector:
-    app: mysql
+#apiVersion: v1
+#kind: Service
+#metadata:
+  #name: db
+  #labels:
+    #app: db
+#spec:
+  #ports:
+    #- name: mysql
+     # port: 3306
+      #targetPort: 3306
+  #selector:
+    #app: mysql

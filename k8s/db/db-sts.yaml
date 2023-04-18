@@ -40,38 +40,17 @@ spec:
       - name: app-wb
         image: lonelyglare/creador-partidos-futbol
         ports:
-        - containerPort: 5000
-        resources:
-          limits:
-            cpu: "1"
-            memory: "200Mi"
-          requests:
-            cpu: "1"
-            memory: "100Mi"
-        env:
-        - name: MYSQL_USER
-          valueFrom:
-            secretKeyRef:
-              name: user-config
-              key: MYSQL_USER
-        - name: MYSQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: user-config
-              key: MYSQL_PASSWORD
-        - name: MYSQL_DATABASE
-          valueFrom:
-            secretKeyRef:
-              name: db-config
-              key: MYSQL_DATABASE
-        - name: MYSQL_HOST
-          valueFrom:
-            secretKeyRef:
-              name: db-config
-              key: MYSQL_HOST
+        - containerPort: 5432
         volumeMounts:
         - name: db-storage
           mountPath: /var/lib/mysql
+        resources:
+          limits:
+            memory: "100Mi"
+            cpu: "50m"
+          requests:
+            memory: "50Mi"
+            cpu: "25m"  
   volumeClaimTemplates:
   - metadata:
       name: db-storage

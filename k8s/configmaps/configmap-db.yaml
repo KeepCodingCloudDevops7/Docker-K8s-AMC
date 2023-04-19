@@ -4,5 +4,5 @@ metadata:
   name: db-config
 data:
   MYSQL_DATABASE: db-partidos
-  MYSQL_HOST: db
+  MYSQL_HOST: db ## Host = Headless para que acceda a ello
   MYSQL_ROOT_PASSWORD: root

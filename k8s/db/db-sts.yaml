@@ -3,15 +3,15 @@ kind: StatefulSet
 metadata:
   name: db
 spec:
-  serviceName: db
+  serviceName: db-headless
   replicas: 1
   selector:
     matchLabels:
-      app: db-svc
-  template:
+      app: pod-db
+  template:   # A partir de aqui es la config de un pod
     metadata:
       labels:
-        app: db-svc
+        app: pod-db
     spec:
       affinity:
         podAffinity:
@@ -54,14 +54,4 @@ spec:
       resources:
         requests:
           storage: 5Gi
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: db
-spec:
-  ports:
-  - port: 3306
-  clusterIP: None
-  selector:
-    app: db-svc
+

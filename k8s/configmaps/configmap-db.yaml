@@ -4,4 +4,5 @@ metadata:
   name: db-config
 data:
   MYSQL_DATABASE: db-partidos
-  MYSQL_HOST: derp
+  MYSQL_HOST: db
+  MYSQL_ROOT_PASSWORD: root

@@ -22,7 +22,7 @@ spec:
                 - key: app
                   operator: In
                   values: 
-                  - app-db
+                  - db
               topologyKey: "topology.kubernetes.io/hostname"
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -67,25 +67,5 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: db-config
-              key: MYSQL_HOST
-        #volumeMounts:
-        #- name: db-storage
-         # mountPath: /var/lib/mysql
-      #volumes:
-      #- name: db-storage
-       # persistentVolumeClaim:
-        #  claimName: db-volume
+              key: MYSQL_HOST        
 ---
-#apiVersion: v1
-#kind: Service
-#metadata:
-  #name: db
-  #labels:
-    #app: db
-#spec:
-  #ports:
-    #- name: mysql
-     # port: 3306
-      #targetPort: 3306
-  #selector:
-    #app: mysql

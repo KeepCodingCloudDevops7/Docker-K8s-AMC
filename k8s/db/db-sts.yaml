@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: app-statefulset
+  name: db
 spec:
-  serviceName: app-service
+  serviceName: db
   replicas: 1
   selector:
     matchLabels:
-      app: app-wb
+      app: db-svc
   template:
     metadata:
       labels:
-        app: app-wb
+        app: db-svc
     spec:
       affinity:
         podAffinity:
@@ -23,34 +23,28 @@ spec:
                 - key: app
                   operator: In
                   values:
-                    - app-db
-              topologyKey: "topology.kubernetes.io/hostname"
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 1
-            podAffinityTerm:
-              labelSelector:
-                matchExpressions:
-                - key: app
-                  operator: In
-                  values:
                     - app-wb
               topologyKey: "topology.kubernetes.io/hostname"
       containers:
-      - name: app-wb
-        image: lonelyglare/creador-partidos-futbol
+      - name: db
+        image: mysql:8.0
+        envFrom:
+        - configMapRef:
+            name: db-config
+        - secretRef:
+            name: user-config
         ports:
-        - containerPort: 5432
+        - containerPort: 3306
         volumeMounts:
         - name: db-storage
           mountPath: /var/lib/mysql
         resources:
           limits:
-            memory: "100Mi"
-            cpu: "50m"
+            memory: "2Gi"  # aumenta el límite de memoria a 2GB
+            cpu: "1"       # aumenta la capacidad de procesamiento a 1 nucleo
           requests:
-            memory: "50Mi"
-            cpu: "25m"  
+            memory: "1Gi"  # solicita al menos 1GB de memoria
+            cpu: "0.5"
   volumeClaimTemplates:
   - metadata:
       name: db-storage
@@ -60,3 +54,14 @@ spec:
       resources:
         requests:
           storage: 5Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+spec:
+  ports:
+  - port: 3306
+  clusterIP: None
+  selector:
+    app: db-svc

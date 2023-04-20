@@ -37,7 +37,7 @@ spec:
               topologyKey: "topology.kubernetes.io/hostname"
       containers:
       - name: app-wb
-        image: lonelyglare/creador-partidos-futbol
+        image: lonelyglare/creador-partidos-futbol:1.2
         ports:
         - containerPort: 5000
         resources:

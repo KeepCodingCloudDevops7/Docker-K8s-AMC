@@ -40,10 +40,10 @@ spec:
           mountPath: /var/lib/mysql
         resources:
           limits:
-            memory: "2Gi"  # aumenta el límite de memoria a 2GB
+            memory: "500Mi"  # aumenta el límite de memoria a 2GB
             cpu: "1"       # aumenta la capacidad de procesamiento a 1 nucleo
           requests:
-            memory: "1Gi"  # solicita al menos 1GB de memoria
+            memory: "250Mi"  # solicita al menos 1GB de memoria
             cpu: "0.5"
   volumeClaimTemplates:
   - metadata:

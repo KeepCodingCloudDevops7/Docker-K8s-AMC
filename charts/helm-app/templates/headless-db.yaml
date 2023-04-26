@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: db-headless
+spec:
+  ports:
+  - port: 3306
+    name: headless
+  clusterIP: None
+  selector:
+    app: pod-db

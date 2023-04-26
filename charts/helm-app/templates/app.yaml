@@ -1,10 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app-deploy
-  namespace: kp-practica
+  name: app-deploy-{{ include "charts.fullname" . }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: app-wb
@@ -23,7 +22,7 @@ spec:
                 - key: app
                   operator: In
                   values: 
-                  - app-db
+                  - db
               topologyKey: "topology.kubernetes.io/hostname"
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -38,16 +37,16 @@ spec:
               topologyKey: "topology.kubernetes.io/hostname"
       containers:
       - name: app-wb
-        image: lonelyglare/creador-partidos-futbol
+        image: lonelyglare/creador-partidos-futbol:1.2
         ports:
         - containerPort: 5000
         resources:
           limits:
-            cpu: "1"
-            memory: "200Mi"
+            cpu: {{ .Values.resources.limits.cpu }}
+            memory: {{ .Values.resources.limits.memory }}
           requests:
-            cpu: "1"
-            memory: "100Mi"
+            cpu: {{ .Values.resources.requests.cpu }}
+            memory: {{ .Values.resources.requests.memory }}
         env:
         - name: MYSQL_USER
           valueFrom:
@@ -61,32 +60,12 @@ spec:
               key: MYSQL_PASSWORD
         - name: MYSQL_DATABASE
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               name: db-config
               key: MYSQL_DATABASE
         - name: MYSQL_HOST
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               name: db-config
-              key: MYSQL_HOST
-        volumeMounts:
-        - name: db-storage
-          mountPath: /var/lib/mysql
-      volumes:
-      - name: db-storage
-        persistentVolumeClaim:
-          claimName: db-volume
+              key: MYSQL_HOST        
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: db
-  labels:
-    app: db
-spec:
-  ports:
-    - name: mysql
-      port: 3306
-      targetPort: 3306
-  selector:
-    app: mysql

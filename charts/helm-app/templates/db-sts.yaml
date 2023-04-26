@@ -1,18 +1,17 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: app-statefulset
-  namespace: kp-practica
+  name: db
 spec:
-  serviceName: app-service
+  serviceName: db-headless
   replicas: 1
   selector:
     matchLabels:
-      app: app-wb
-  template:
+      app: pod-db
+  template:   # A partir de aqui es la config de un pod
     metadata:
       labels:
-        app: app-wb
+        app: pod-db
     spec:
       affinity:
         podAffinity:
@@ -24,55 +23,28 @@ spec:
                 - key: app
                   operator: In
                   values:
-                    - app-db
-              topologyKey: "topology.kubernetes.io/hostname"
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 1
-            podAffinityTerm:
-              labelSelector:
-                matchExpressions:
-                - key: app
-                  operator: In
-                  values:
                     - app-wb
               topologyKey: "topology.kubernetes.io/hostname"
       containers:
-      - name: app-wb
-        image: lonelyglare/creador-partidos-futbol
+      - name: db
+        image: mysql:8.0
+        envFrom:
+        - configMapRef:
+            name: db-config
+        - secretRef:
+            name: user-config
         ports:
-        - containerPort: 5000
-        resources:
-          limits:
-            cpu: "1"
-            memory: "200Mi"
-          requests:
-            cpu: "1"
-            memory: "100Mi"
-        env:
-        - name: MYSQL_USER
-          valueFrom:
-            secretKeyRef:
-              name: user-config
-              key: MYSQL_USER
-        - name: MYSQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: user-config
-              key: MYSQL_PASSWORD
-        - name: MYSQL_DATABASE
-          valueFrom:
-            secretKeyRef:
-              name: db-config
-              key: MYSQL_DATABASE
-        - name: MYSQL_HOST
-          valueFrom:
-            secretKeyRef:
-              name: db-config
-              key: MYSQL_HOST
+        - containerPort: 3306
         volumeMounts:
         - name: db-storage
           mountPath: /var/lib/mysql
+        resources:
+          limits:
+            memory: "500Mi"  # aumenta el límite de memoria a 2GB
+            cpu: "1"       # aumenta la capacidad de procesamiento a 1 nucleo
+          requests:
+            memory: "250Mi"  # solicita al menos 1GB de memoria
+            cpu: "0.5"
   volumeClaimTemplates:
   - metadata:
       name: db-storage
@@ -82,3 +54,4 @@ spec:
       resources:
         requests:
           storage: 5Gi
+

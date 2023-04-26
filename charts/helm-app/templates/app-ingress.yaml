@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: app-ingress
+  name: {{ include "helm-app.fullname" . }}-app-ingress
   annotations:
       kubernetes.io/ingress.class: nginx
 spec:
@@ -13,6 +13,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: app-service
+            name: {{ include "helm-app.fullname" . }}-app-service
             port:
               number: 5000

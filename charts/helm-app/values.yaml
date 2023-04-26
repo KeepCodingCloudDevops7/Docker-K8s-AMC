@@ -4,23 +4,55 @@
 ingressPort: 80
 
 # Deployment
-replicas: 1
-resources:
-  requests:
-    memory: 1G
-    cpu: 0.5M
-  limits:
-    memory: 2G
-    cpu: 1M
+Deployment:
+  replicas: 1
+  resources:
+    requests:
+      memory: 2G
+      cpu: 1M
+    limits:
+      memory: 4G
+      cpu: 2M
+  #Affinity    
+  enabled: true
+  app_deploy:
+    podAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: app
+              operator: In
+              values: 
+              - db
+          topologyKey: "failure-domain.beta.kubernetes.io/zone"
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: app
+              operator: In
+              values: 
+              - app-wb
+          topologyKey: "failure-domain.beta.kubernetes.io/zone"
+
 
 #Database
 Db:
-  MYSQL_PASSWORD: dXNlcjEyMw== 
-  MYSQL_ROOT_PASSWORD: cm9vdA== 
-  MYSQL_USER: dXNlcg== 
+  MYSQL_PASSWORD: user123
+  MYSQL_USER: user 
   MYSQL_HOST: db 
   MYSQL_ROOT_PASSWORD: root
+  MYSQL_DATABASE: db-partidos
 
+#Volumes
+volumeMount: 
+  name: db-storage
+  size: 5Gi
+  storageClass: standard
 
 # HPA
 HPA:
@@ -29,4 +61,9 @@ HPA:
   minReplicas: 1
   targetCPUUtilizationPercentage: 70
 
-
+#Service
+service:
+  app:
+    type: LoadBalancer
+  db:
+    type: ClusterIP

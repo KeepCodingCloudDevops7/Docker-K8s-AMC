@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: user-config
+  name: {{ include "helm-app.fullname" . }}-user-config
 type: Opaque
 data:
   MYSQL_USER: {{ .Values.Db.MYSQL_USER| b64enc | quote }} 

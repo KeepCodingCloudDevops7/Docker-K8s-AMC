@@ -1,16 +1,18 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: db
+  name: {{ include "helm-app.fullname" . }}-db
 spec:
-  serviceName: db-headless
+  serviceName: {{ include "helm-app.fullname" . }}-db-headless
   replicas: 1
   selector:
     matchLabels:
+     {{- include "helm-app.selectorLabels" . | nindent 6 }}
       app: pod-db
   template:   # A partir de aqui es la config de un pod
     metadata:
       labels:
+       {{- include "helm-app.selectorLabels" . | nindent 8 }}
         app: pod-db
     spec:
       affinity:
@@ -30,13 +32,13 @@ spec:
         image: mysql:8.0
         envFrom:
         - configMapRef:
-            name: db-config
+            name: {{ include "helm-app.fullname" . }}-db-config
         - secretRef:
-            name: user-config
+            name: {{ include "helm-app.fullname" . }}-user-config
         ports:
         - containerPort: 3306
         volumeMounts:
-        - name: db-storage
+        - name: {{ include "helm-app.fullname" . }}-db-storage
           mountPath: /var/lib/mysql
         resources:
           limits:
@@ -47,11 +49,11 @@ spec:
             cpu: "0.5"
   volumeClaimTemplates:
   - metadata:
-      name: db-storage
+      name: {{ .Values.volumeMount.name }}
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "standard"
+      storageClassName: {{ .Values.volumeMount.storageClass | quote }}
       resources:
         requests:
-          storage: 5Gi
+          storage: {{ .Values.volumeMount.size }}
 

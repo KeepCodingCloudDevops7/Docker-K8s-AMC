@@ -40,13 +40,6 @@ spec:
         volumeMounts:
         - name: {{ include "helm-app.fullname" . }}-db-storage
           mountPath: /var/lib/mysql
-        resources:
-          limits:
-            memory: "500Mi"  # aumenta el límite de memoria a 2GB
-            cpu: "1"       # aumenta la capacidad de procesamiento a 1 nucleo
-          requests:
-            memory: "250Mi"  # solicita al menos 1GB de memoria
-            cpu: "0.5"
   volumeClaimTemplates:
   - metadata:
       name: {{ .Values.volumeMount.name }}

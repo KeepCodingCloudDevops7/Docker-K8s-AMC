@@ -27,11 +27,11 @@ spec:
         - containerPort: 5000
         resources:
           limits:
-            #cpu: {{ .Values.Deployment.resources.limits.cpu }}
-            #memory: {{ .Values.Deployment.resources.limits.memory }}
+            cpu: {{ .Values.Deployment.resources.limits.cpu }}
+            memory: {{ .Values.Deployment.resources.limits.memory }}
           requests:
-            #cpu: {{ .Values.Deployment.resources.limits.cpu }}
-            #memory: {{ .Values.Deployment.resources.limits.memory }}
+            cpu: {{ .Values.Deployment.resources.requests.cpu }}
+            memory: {{ .Values.Deployment.resources.requests.memory }}
         env:
         - name: MYSQL_USER
           valueFrom:

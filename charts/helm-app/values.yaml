@@ -8,11 +8,11 @@ Deployment:
   replicas: 1
   resources:
     requests:
-      memory: 2G
-      cpu: 1M
+      memory: 100M
+      cpu: 10m
     limits:
-      memory: 4G
-      cpu: 2M
+      memory: 2G
+      cpu: 2
   #Affinity    
   enabled: true
   app_deploy:

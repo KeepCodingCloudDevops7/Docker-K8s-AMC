@@ -4,4 +4,4 @@ metadata:
   name: {{ include "helm-app.fullname" . }}-db-config
 data:
   MYSQL_DATABASE: {{ .Values.Db.MYSQL_DATABASE }}
-  MYSQL_HOST: {{ .Values.Db.MYSQL_HOST }}
+  MYSQL_HOST: {{ include "helm-app.fullname" . }}-{{ .Values.Db.MYSQL_HOST }}

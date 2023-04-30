@@ -6,8 +6,7 @@ spec:
   ## Al no especificar pasa a ser un cluster ip por defecto
   type: {{ .Values.service.db.type }}
   selector:
-    {{- include "helm-app.selectorLabels" . | nindent 4 }}
-    app: pod-db
+      app: pod-db
   ports:
   - protocol: TCP
     port: 3306
